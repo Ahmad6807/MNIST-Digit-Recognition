@@ -1,0 +1,67 @@
+data:
+  source: "tf"
+  csv_train_path: "data/mnist_train.csv"
+  csv_test_path: "data/mnist_test.csv"
+  cache_dir: "data/"
+  val_size: 10000
+  random_state: 42
+
+preprocessing:
+  normalize: true
+  reshape_for_cnn: true
+  augmentation:
+    enabled: false
+    rotation_range: 10
+    width_shift_range: 0.1
+    height_shift_range: 0.1
+    zoom_range: 0.1
+
+model:
+  type: "cnn"
+  baseline:
+    C: 1.0
+    max_iter: 1000
+  cnn:
+    architecture: "default"
+    optimizer: "adam"
+    learning_rate: 0.001
+    loss: "categorical_crossentropy"
+
+training:
+  epochs: 50
+  batch_size: 128
+  callbacks:
+    early_stopping:
+      monitor: "val_loss"
+      patience: 5
+      restore_best_weights: true
+    reduce_lr:
+      monitor: "val_loss"
+      factor: 0.5
+      patience: 3
+      min_lr: 0.000001
+    model_checkpoint:
+      filepath: "models/best_cnn_model.keras"
+      monitor: "val_accuracy"
+      mode: "max"
+      save_best_only: true
+
+evaluation:
+  test_batch_size: 128
+  save_misclassified: 20
+
+inference:
+  model_path: "models/best_cnn_model.keras"
+  image_size: [28, 28]
+  invert_threshold: 127
+
+web:
+  framework: "gradio"
+  host: "0.0.0.0"
+  port: 7860
+  share: false
+  max_file_size_mb: 10
+  theme: "default"
+  title: "MNIST Digit Recognizer"
+  enable_accessibility: true
+  accessibility_assets_dir: "assets/accessibility"

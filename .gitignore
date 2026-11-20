@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Data files
+data/*.csv
+data/*.npz
+data/mnist_preprocessed.npz
+
+# Model files
+models/*.h5
+models/*.keras
+models/*.pkl
+models/*.onnx
+
+# Logs
+logs/
+*.log
+
+# Reports (generated)
+reports/*.png
+reports/*.json
+reports/*.md
+
+# Jupyter notebooks checkpoints
+notebooks/.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.local
+
+# TensorBoard
+logs/fit/

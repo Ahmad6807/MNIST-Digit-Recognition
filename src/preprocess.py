@@ -171,28 +171,18 @@ def generate_synthetic_digit(digit: int,
 def load_accessibility_templates(assets_dir: str = "assets/accessibility") -> Dict[int, np.ndarray]:
     """Load 28x28 grayscale PNG templates (digit_0.png .. digit_9.png).
 
-    Creates placeholder white-on-black templates if no real templates exist.
+    Uses in-memory placeholders for missing files so read-only deployments work.
     """
     templates = {}
     import cv2
     assets_path = Path(assets_dir)
-    assets_path.mkdir(parents=True, exist_ok=True)
-    all_exist = all((assets_path / f"digit_{i}.png").exists() for i in range(10))
-
-    if all_exist:
-        for i in range(10):
-            img_path = str(assets_path / f"digit_{i}.png")
-            img = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
-            if img is not None:
-                img = cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
-                templates[i] = img
-            else:
-                templates[i] = _create_placeholder_template(i)
-    else:
-        for i in range(10):
-            templates[i] = _create_placeholder_template(i)
-            placeholder_path = assets_path / f"digit_{i}.png"
-            cv2.imwrite(str(placeholder_path), _create_placeholder_template(i))
+    for i in range(10):
+        img_path = assets_path / f"digit_{i}.png"
+        img = cv2.imread(str(img_path), cv2.IMREAD_GRAYSCALE) if img_path.is_file() else None
+        templates[i] = (
+            cv2.resize(img, (28, 28), interpolation=cv2.INTER_AREA)
+            if img is not None else _create_placeholder_template(i)
+        )
 
     return templates
 

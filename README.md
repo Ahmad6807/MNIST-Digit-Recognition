@@ -33,6 +33,7 @@ source venv/bin/activate          # Linux/Mac
 
 python -m pip install --upgrade pip
 pip install -r requirements.txt
+pip install -r requirements-dev.txt  # Training, evaluation, and tests
 ```
 
 If installation reports that no TensorFlow distribution is available, check
@@ -104,7 +105,7 @@ mnist-digit-recognition/
 │   └── accessibility/       # Pre-stored digit templates for accessibility
 ├── data/                    # Raw & processed data (gitignored)
 ├── logs/                    # TensorBoard logs, training metrics CSV
-├── models/                  # Saved model files (gitignored)
+├── models/                  # Best CNN checkpoint is included for Vercel inference
 ├── notebooks/
 │   └── EDA.ipynb            # Exploratory Data Analysis
 ├── reports/                 # Generated figures, metrics, comparisons
@@ -135,6 +136,13 @@ mnist-digit-recognition/
 ├── requirements.txt         # Pinned dependencies
 └── README.md
 ```
+
+### Deploy on Vercel
+
+The Gradio interface is exposed as an ASGI application from `src/app.py` for
+Vercel's Python runtime. Include `models/best_cnn_model.keras` in the Git
+repository so deployed predictions have a trained model. Other generated model
+files and non-runtime assets are excluded from the deployed function.
 
 ## Architecture
 

@@ -10,6 +10,7 @@ if str(PROJECT_ROOT) not in sys.path:
 import gradio as gr
 import numpy as np
 import pandas as pd
+from fastapi import FastAPI
 
 from src.config_loader import load_config
 from src.predict import load_model, predict_single_image
@@ -221,11 +222,15 @@ def build_app() -> gr.Blocks:
     return demo
 
 
+initialize()
+demo = build_app()
+# Vercel's Python runtime imports this module and serves a top-level ASGI app.
+app = gr.mount_gradio_app(FastAPI(), demo, path="/")
+
+
 if __name__ == "__main__":
-    initialize()
-    app = build_app()
     web_cfg = config.get("web", {})
-    app.launch(
+    demo.launch(
         server_name=web_cfg.get("host", "127.0.0.1"),
         server_port=web_cfg.get("port", 7860),
         share=web_cfg.get("share", False),
